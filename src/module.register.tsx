@@ -1,8 +1,10 @@
-import dashboard from './dashboard';
+import home from './home';
+import views from './views';
 
 export function RegisterModules() {
     return new Promise((resolve, reject) => {
-        dashboard();
+        home();
+        views();
         resolve();
     });
 }

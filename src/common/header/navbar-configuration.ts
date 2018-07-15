@@ -3,16 +3,13 @@ export const NAVBAR_BRANDS = [
         linkTo: '/home',
         label: 'Home'
     }, {
-        dropdownName: 'Entities',
+        dropdownName: 'Views',
         dropdown: [{
-            linkTo: '/entities',
-            label: 'All Entities'
+            linkTo: '/views',
+            label: 'All Views'
         }, {
-            linkTo: '/entities/new',
-            label: 'Create new entity'
+            linkTo: '/views/new',
+            label: 'Create new view'
         }]
-    }, {
-        linkTo: '/views',
-        label: 'Show All Views'
     }
 ]

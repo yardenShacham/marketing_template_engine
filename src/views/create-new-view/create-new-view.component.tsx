@@ -2,7 +2,7 @@ import * as React from "react";
 import {inject, observer} from "mobx-react";
 
 @observer
-export class Dashboard extends React.Component<any> {
+export class CreateNewView extends React.Component<any> {
 
     componentDidMount() {
     }
@@ -10,7 +10,7 @@ export class Dashboard extends React.Component<any> {
     render() {
         return (
             <div>
-                <h1>dashboard</h1>
+                <h1>Create New View</h1>
             </div>);
     }
 }

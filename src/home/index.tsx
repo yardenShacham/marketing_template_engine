@@ -1,5 +1,5 @@
 import {addRoute} from '../app.routes';
-import {route} from './dashboard.route';
+import {route} from './home.route';
 
 
 export default function () {
