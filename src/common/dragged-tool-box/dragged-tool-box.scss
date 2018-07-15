@@ -1,0 +1,71 @@
+:root {
+  --backgroundColor: transparent;
+  --border: 2px solid rgba(235, 235, 235, .5);
+  --maxHight: 100px;
+  --maxWidth: 10000px;
+  --overflowY: scroll;
+}
+
+.tool-box-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 20px;
+  border: 2px solid rgba(235, 235, 235, .5);
+  .tool-item {
+    margin: 10px;
+    max-height: var(--maxHight);
+    max-width: var(--maxWidth);
+    min-height: 110px;
+    display: flex;
+    border-radius: 10px;
+    border: var(--border);
+    background-color: var(--backgroundColor);
+    justify-content: center;
+    align-items: center;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    &::-webkit-scrollbar-track {
+      // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      height: 50px;
+      background-image: -webkit-gradient(linear,
+              left bottom,
+              left top,
+              color-stop(0.44, rgb(122, 153, 217)),
+              color-stop(0.72, rgb(73, 125, 189)),
+              color-stop(0.86, rgb(28, 58, 148)));
+    }
+    &:after {
+      content: '';
+    }
+    &:active {
+      cursor: grabbing;
+      cursor: -moz-grabbing;
+      cursor: -webkit-grabbing;
+    }
+    &:hover {
+      --visibility: visible;
+    }
+    .remove-box {
+      width: 10%;
+      font-size: 15px;
+      text-align: center;
+      cursor: pointer;
+      position: absolute;
+      right: 0px;
+      top: -1px;
+    }
+  }
+}
+
+.drop-zone {
+  &.active {
+    background-color: #3b5998;
+  }
+}
