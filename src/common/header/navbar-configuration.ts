@@ -1,6 +1,6 @@
 export const NAVBAR_BRANDS = [
     {
-        linkTo: '/home',
+        linkTo: '/',
         label: 'Home'
     }, {
         dropdownName: 'Views',
