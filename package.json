@@ -16,6 +16,7 @@
     "guid": "0.0.12",
     "history": "4.7.2",
     "jquery": "3.2.1",
+    "react-html-parser": "^2.0.2",
     "jx-injector": "^1.0.8",
     "lodash": "^4.17.4",
     "mobx": "3.3.1",

@@ -14,6 +14,7 @@ class ViewStore {
     }
 
     @observable selectedView;
+    @observable currentViewTemplate;
     @observable allViewsInstances;
     @observable viewNames = [];
     @observable searchViewInstanceNameOrId: string;
@@ -65,10 +66,24 @@ class ViewStore {
     };
 
     @action
-    getViewInstanceId(viewInstanceId: any) {
+    getViewInstanceId = (viewInstanceId: any) => {
         appInjector.get('viewService').getViewInstance(viewInstanceId).then((viewInstance) => {
             runInAction(() => {
                 this.currentViewInstance = viewInstance;
+            });
+        });
+    }
+
+    @action
+    updateViewInstance = (viewInstanceId, fields) => {
+        appInjector.get('viewService').updateViewInstanceContent(viewInstanceId, fields)
+            .then(() => this.getViewInstanceId(viewInstanceId));
+    };
+
+    getViewTemplate = () => {
+        appInjector.get('viewService').getViewTemplate(this.selectedView).then((viewTemplate) => {
+            runInAction(() => {
+                this.currentViewTemplate = viewTemplate;
             });
         });
     }

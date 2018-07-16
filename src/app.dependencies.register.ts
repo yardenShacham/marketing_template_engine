@@ -71,6 +71,24 @@ class viewServiceMock {
         return Promise.resolve(this.allViewsMap);
     }
 
+    getViewTemplate(viewName) {
+        return Promise.resolve(`<div className="conatiner">
+                                       <div className="header">{header}</div>
+                                       <div className="subHeader">{subHeader}</div>
+                                       <div className="addtionl-html-container">{addtionalHtml}</div>
+                                     </div>`
+        );
+    }
+
+    updateViewInstanceContent(viewInstanceId, instanceContent) {
+        const [viewName, viewInstanceName] = viewInstanceId.split('-');
+        if (this.allViews[viewName]) {
+            const instanceKey = viewInstanceName.toLowerCase();
+            this.allViews[viewName][instanceKey].content = Object.assign(this.allViews[viewName][instanceKey].content, instanceContent);
+            return Promise.resolve();
+        }
+    };
+
     getViewsInstances(viewName) {
         if (!viewName)
             return Promise.resolve([]);
