@@ -1,3 +1,4 @@
+import './view-list.scss';
 import {addRoute} from '../../app.routes';
 import {route} from './view-list.route';
 

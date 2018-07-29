@@ -1,5 +1,5 @@
 import {addRoute} from '../../app.routes';
-import {route} from './create-new-view.route';
+import {route} from './view-instance-list.route';
 
 
 export default function () {

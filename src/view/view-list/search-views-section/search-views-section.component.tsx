@@ -4,7 +4,7 @@ import Select from 'react-select';
 
 
 @inject('viewsStore') @observer
-export class SearchViews extends React.Component<any> {
+export class SearchViewsSection extends React.Component<any> {
 
     state: any;
     refs: any
@@ -14,7 +14,8 @@ export class SearchViews extends React.Component<any> {
         this.state = {
             selectedView: null
         };
-        props.viewsStore.getViewNames();
+        const {viewsStore} = props;
+        viewsStore.getAllViews();
     }
 
 
@@ -45,12 +46,12 @@ export class SearchViews extends React.Component<any> {
     };
 
     render() {
-        const {viewNames} = this.props.viewsStore;
+        const {allViews} = this.props.viewsStore;
         return (
             <div className="insert-entity-container">
                 <div className="search-item">
                     <Select
-                        options={viewNames.map((e: any) => {
+                        options={allViews.map((e: any) => {
                             return {
                                 value: e.id,
                                 label: e.name

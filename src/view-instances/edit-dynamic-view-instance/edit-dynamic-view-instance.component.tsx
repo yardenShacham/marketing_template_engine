@@ -4,7 +4,7 @@ import {EditViewStaticFields} from './view-static-fields';
 import {EditPreview} from './edit-preview';
 
 @inject('viewsStore') @observer
-export class EditView extends React.Component<any, any> {
+export class EditDynamicViewInstance extends React.Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {

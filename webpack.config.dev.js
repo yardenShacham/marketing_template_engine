@@ -13,7 +13,7 @@ config.devServer = {
     historyApiFallback: true,
     hot: false,
     compress: true,
-    port: 3000,
+    port: 3001,
     publicPath: '/'
 };
 

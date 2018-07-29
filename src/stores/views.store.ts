@@ -1,97 +1,48 @@
-import {
-    action,
-    observable,
-    runInAction,
-    computed
-} from 'mobx';
+import {action, observable, computed} from 'mobx';
 import {appInjector} from '../core/appInjector';
 
 class ViewStore {
 
-    constructor(initialStore: any) {
-        this.currentViewInstance = null;
-        this.selectedView = null;
-    }
 
-    @observable selectedView;
+    //<editor-fold desc="All Views Page">
     @observable currentViewTemplate;
-    @observable allViewsInstances;
-    @observable viewNames = [];
-    @observable searchViewInstanceNameOrId: string;
-    @observable currentViewInstance: any
+    @observable allViews = [];
+    @observable searchViewNameOrId: string;
 
-    //<editor-fold desc="All Views Actions">
     @computed
     get searchedViews() {
-        return this.allViewsInstances ? this.allViewsInstances.filter((view: any) => {
-            return this.searchViewInstanceNameOrId ? view.name.toLowerCase()
-                .includes(this.searchViewInstanceNameOrId.toLowerCase()) ? true : this.searchViewInstanceNameOrId === view.id : true;
+        return this.allViews ? this.allViews.filter(({viewId, name}) => {
+            return this.searchViewNameOrId ? name.toLowerCase()
+                .includes(this.searchViewNameOrId.toLowerCase()) ? true : this.searchViewNameOrId === viewId : true;
         }) : []
     }
 
     @action
-    getViewNames() {
-        appInjector.get('viewService').getAllViews().then((views: any[]) => {
-            if (views) {
-                runInAction(() => {
-                    this.viewNames = views;
-                });
-            }
-        });
+    async getAllViews() {
+        //const result = await appInjector.get('viewService').getAllViews();
+        //this.allViews = result || [];
+        this.allViews = [{viewId: "test", name: "yarden"}];
     }
 
     @action
-    searchViews = (searchViewInstanceNameOrId: string) => {
-        this.searchViewInstanceNameOrId = searchViewInstanceNameOrId;
+    searchViews = (searchViewNameOrId: string) => {
+        this.searchViewNameOrId = searchViewNameOrId;
     };
 
     @action
-    removeViewInstance = (viewId: any) => {
-        appInjector.get('viewService').removeViewInstance(viewId)
-            .then(() => this.getAllViewInstances(this.selectedView));
+    removeView = async (viewId: any) => {
+        await appInjector.get('viewService').removeView(viewId);
+        await this.getAllViews();
     };
 
-    @action
-    getAllViewInstances = (viewName) => {
-        if (viewName)
-            this.selectedView = viewName;
 
-        appInjector.get('viewService').getViewsInstances(this.selectedView).then((views: any[]) => {
-            if (views) {
-                runInAction(() => {
-                    this.allViewsInstances = views;
-                });
-            }
-        });
-    };
+    //</editor-fold>
 
-    @action
-    getViewInstanceId = (viewInstanceId: any) => {
-        appInjector.get('viewService').getViewInstance(viewInstanceId).then((viewInstance) => {
-            runInAction(() => {
-                this.currentViewInstance = viewInstance;
-            });
-        });
-    }
-
-    @action
-    updateViewInstance = (viewInstanceId, fields) => {
-        appInjector.get('viewService').updateViewInstanceContent(viewInstanceId, fields)
-            .then(() => this.getViewInstanceId(viewInstanceId));
-    };
-
-    getViewTemplate = () => {
-        appInjector.get('viewService').getViewTemplate(this.selectedView).then((viewTemplate) => {
-            runInAction(() => {
-                this.currentViewTemplate = viewTemplate;
-            });
-        });
-    }
-
+    //<editor-fold desc="Edit View Page">
     //</editor-fold>
 
 }
 
 export function getViewsStore(initialState: any) {
-    return new ViewStore({});
+    return new ViewStore();
 }

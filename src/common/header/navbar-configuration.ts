@@ -7,9 +7,12 @@ export const NAVBAR_BRANDS = [
         dropdown: [{
             linkTo: '/views',
             label: 'All Views'
-        }, {
-            linkTo: '/views/new',
-            label: 'Create new view'
+        }]
+    }, {
+        dropdownName: 'View Instances',
+        dropdown: [{
+            linkTo: '/view-instances',
+            label: 'All View Instances'
         }]
     }
 ]
