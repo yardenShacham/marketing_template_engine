@@ -1,4 +1,4 @@
-import {action, observable, computed} from 'mobx';
+import {action, observable, runInAction, computed} from 'mobx';
 import {appInjector} from '../core/appInjector';
 
 class ViewStore {
@@ -19,9 +19,10 @@ class ViewStore {
 
     @action
     async getAllViews() {
-        //const result = await appInjector.get('viewService').getAllViews();
-        //this.allViews = result || [];
-        this.allViews = [{viewId: "test", name: "yarden"}];
+        const result = await appInjector.get('viewService').getAllViews();
+        runInAction(() => {
+            this.allViews = result || [];
+        });
     }
 
     @action

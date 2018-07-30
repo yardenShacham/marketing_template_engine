@@ -5,22 +5,21 @@ import {List} from '../../common/list';
 import {confirmAlert} from 'react-confirm-alert';
 
 const ViewDetails = (props) => {
-    const {name} = props;
-    return <h1>{name}</h1>;
+    return props.name;
 };
 
 const ViewActions = (props) => {
-    const {onEdit, onRemove, item} = props;
+    const {onEdit, onRemove, viewInfo} = props;
     return (
-        <div>
+        <React.Fragment>
          <span className="action-item glyphicon glyphicon-edit"
-               onClick={() => onEdit ? onEdit(item) : null}>
+               onClick={() => onEdit ? onEdit(viewInfo) : null}>
     </span>
             <div className="separate-item"></div>
             <span className="action-item glyphicon glyphicon-remove"
-                  onClick={() => onRemove ? onRemove(item) : null}>
+                  onClick={() => onRemove ? onRemove(viewInfo) : null}>
     </span>
-        </div>
+        </React.Fragment>
     )
 };
 
@@ -31,14 +30,14 @@ export class ViewList extends React.Component<any> {
         super(props);
     }
 
-    tryRemoveView = (viewInfo: any) => {
-        const {removeViewInstance} = this.props.viewsStore;
+    tryRemoveView = ({name, viewId}) => {
+        const {removeView} = this.props.viewsStore;
         confirmAlert({
-            title: `Remove ${viewInfo.name} View`,
+            title: `Remove ${name} View`,
             message: 'Are you sure you want to remove this view ?',
             confirmLabel: 'Ok',
             cancelLabel: 'Cancel',
-            onConfirm: () => removeViewInstance(viewInfo.id),
+            onConfirm: () => removeView(viewId),
         });
     };
 
@@ -52,11 +51,11 @@ export class ViewList extends React.Component<any> {
             <div style={{padding: '30px', width: '60%'}}>
                 <SearchViewsSection/>
                 <List data={searchedViews}
-                      getDetailsView={(item) => <ViewDetails item={item}/>}
+                      getDetailsView={(item) => <ViewDetails {...item}/>}
                       getActionView={
-                          (item) => <ViewActions item={item}
-                                                 onRemove={this.tryRemoveView}
-                                                 onEdit={this.moveToEditView}/>
+                          (viewInfo) => <ViewActions viewInfo={viewInfo}
+                                                     onRemove={this.tryRemoveView}
+                                                     onEdit={this.moveToEditView}/>
                       }/>
             </div>);
     }

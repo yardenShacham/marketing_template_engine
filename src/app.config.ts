@@ -1,4 +1,4 @@
 export const appConfiguration = {
     isDevMode: true,
-    isTestMode: true
+    isTestMode: false
 }
