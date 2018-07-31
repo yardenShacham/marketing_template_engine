@@ -13,4 +13,13 @@ export class ViewService {
         const url = `${domain.local}${viewApiRoute.removeView}`;
         return await appInjector.get(appServices.httpService).delete(url, {viewId})
     }
+
+    async addNewView(viewName) {
+        const url = `${domain.local}${viewApiRoute.addNewView}`;
+        const viewId = await appInjector.get(appServices.httpService).post(url, {viewName}).json();
+        return {
+            viewId,
+            name: viewName
+        }
+    }
 }

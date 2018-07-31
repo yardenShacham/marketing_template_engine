@@ -1,0 +1,10 @@
+.ok-input-container {
+  position: relative;
+  .okBtn {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 22px;
+  }
+}

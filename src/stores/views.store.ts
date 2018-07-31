@@ -8,6 +8,7 @@ class ViewStore {
     @observable currentViewTemplate;
     @observable allViews = [];
     @observable searchViewNameOrId: string;
+    @observable isLoading: boolean = false;
 
     @computed
     get searchedViews() {
@@ -19,8 +20,10 @@ class ViewStore {
 
     @action
     async getAllViews() {
+        this.isLoading = true;
         const result = await appInjector.get('viewService').getAllViews();
         runInAction(() => {
+            this.isLoading = false;
             this.allViews = result || [];
         });
     }
@@ -32,8 +35,22 @@ class ViewStore {
 
     @action
     removeView = async (viewId: any) => {
+        this.isLoading = true;
         await appInjector.get('viewService').removeView(viewId);
-        await this.getAllViews();
+        runInAction(() => {
+            this.allViews = this.allViews.filter((view) => view.viewId !== viewId);
+            this.isLoading = false;
+        });
+    };
+
+    @action
+    addNewView = async (viewName: any) => {
+        this.isLoading = true;
+        const newView = await appInjector.get('viewService').addNewView(viewName);
+        runInAction(() => {
+            this.allViews.push(newView);
+            this.isLoading = false;
+        });
     };
 
 

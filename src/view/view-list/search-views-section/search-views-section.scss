@@ -1,13 +1,23 @@
-.insert-entity-container {
+.search-view-container {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
   width: 70%;
-  .search-item {
-    min-width: 300px;
+  .add-new-view-container {
   }
-  .btn-success {
-    width: 130px;
-    font-weight: bold;
+  .search-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    .search-item {
+      flex: auto;
+      min-width: 300px;
+      margin-right: 10px;
+    }
+    .btn-success {
+      outline: none;
+      width: 130px;
+      font-weight: bold;
+    }
   }
 }

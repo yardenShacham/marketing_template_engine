@@ -2,6 +2,7 @@ import * as React from "react";
 import {inject, observer} from "mobx-react";
 import {SearchViewsSection} from './search-views-section';
 import {List} from '../../common/list';
+import {Loader} from '../../common/loader';
 import {confirmAlert} from 'react-confirm-alert';
 
 const ViewDetails = (props) => {
@@ -30,6 +31,11 @@ export class ViewList extends React.Component<any> {
         super(props);
     }
 
+    componentDidMount() {
+        const {viewsStore} = this.props;
+        viewsStore.getAllViews();
+    }
+
     tryRemoveView = ({name, viewId}) => {
         const {removeView} = this.props.viewsStore;
         confirmAlert({
@@ -46,17 +52,23 @@ export class ViewList extends React.Component<any> {
     };
 
     render() {
-        const {searchedViews} = this.props.viewsStore;
+        const {searchedViews, isLoading} = this.props.viewsStore;
         return (
             <div style={{padding: '30px', width: '60%'}}>
                 <SearchViewsSection/>
-                <List data={searchedViews}
-                      getDetailsView={(item) => <ViewDetails {...item}/>}
-                      getActionView={
-                          (viewInfo) => <ViewActions viewInfo={viewInfo}
-                                                     onRemove={this.tryRemoveView}
-                                                     onEdit={this.moveToEditView}/>
-                      }/>
-            </div>);
+                {
+                    isLoading ? <Loader/> :
+                        searchedViews && searchedViews.length > 0 ?
+                            <List data={searchedViews}
+                                  getDetailsView={(item) => <ViewDetails {...item}/>}
+                                  getActionView={
+                                      (viewInfo) => <ViewActions viewInfo={viewInfo}
+                                                                 onRemove={this.tryRemoveView}
+                                                                 onEdit={this.moveToEditView}/>
+                                  }/> :
+                            <div className="noResult">No Result</div>
+                }
+            </div>
+        );
     }
 }

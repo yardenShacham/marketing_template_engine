@@ -3,5 +3,6 @@ export const domain = {
 };
 export const viewApiRoute = {
     getAllViews: "/views",
-    removeView: "/views"
+    removeView: "/views",
+    addNewView: "/views"
 };
