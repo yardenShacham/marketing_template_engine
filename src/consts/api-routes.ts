@@ -4,5 +4,6 @@ export const domain = {
 export const viewApiRoute = {
     getAllViews: "/views",
     removeView: "/views",
-    addNewView: "/views"
+    addNewView: "/views",
+    updateViewName: (viewId) => `/views/${viewId}`
 };

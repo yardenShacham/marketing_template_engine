@@ -16,7 +16,16 @@ export class ViewService {
 
     async addNewView(viewName) {
         const url = `${domain.local}${viewApiRoute.addNewView}`;
-        const viewId = await appInjector.get(appServices.httpService).post(url, {viewName}).json();
+        const viewId = await appInjector.get(appServices.httpService).post(url, {viewName});
+        return {
+            viewId,
+            name: viewName
+        }
+    }
+
+    async updateViewName(viewId, viewName) {
+        const url = `${domain.local}${viewApiRoute.updateViewName(viewId)}`;
+        await appInjector.get(appServices.httpService).put(url, {viewName});
         return {
             viewId,
             name: viewName

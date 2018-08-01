@@ -31,7 +31,13 @@ export class HttpService {
     }
 
     async post(url, body) {
-        return await fetch(url, this.getRequestMetadata(METHOD_TYPES.post, body));
+        const result = await fetch(url, this.getRequestMetadata(METHOD_TYPES.post, body));
+        return result.status === 200 ? result.json && await result.json() : true;
+    }
+
+    async put(url, body) {
+        const result = await fetch(url, this.getRequestMetadata(METHOD_TYPES.put, body));
+        return result.status === 200 ? result.json && await result.json() : true;
     }
 
     async delete(url, body) {

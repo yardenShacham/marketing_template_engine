@@ -53,6 +53,15 @@ class ViewStore {
         });
     };
 
+    @action
+    updateViewName = async (viewId, viewName: any) => {
+        const updatedView = await appInjector.get('viewService').updateViewName(viewId, viewName);
+        runInAction(() => {
+            const foundIndex = this.allViews.findIndex((view) => view.viewId === viewId);
+            this.allViews[foundIndex] = updatedView;
+        });
+    };
+
 
     //</editor-fold>
 

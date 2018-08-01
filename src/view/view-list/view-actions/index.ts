@@ -1,0 +1,1 @@
+export {ViewActions} from './view-actions.component';
