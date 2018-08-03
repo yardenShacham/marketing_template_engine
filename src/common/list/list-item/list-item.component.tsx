@@ -7,8 +7,7 @@ export const ListItem = (props: any) => {
             <div className="details" style={{padding: '10px'}}>
                 {detailsView}
             </div>
-            <div className="actions"
-                 style={{padding: '10px'}}>
+            <div className="actions">
                 {actionView}
             </div>
         </div>);

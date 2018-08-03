@@ -12,7 +12,16 @@ const ViewDetails = (props) => {
     const {viewInfo, isEditMode, onNameChange, isLoading} = props;
     return isLoading ? <Loader/> : isEditMode ?
         <Input initValue={viewInfo.name} onChange={(value) => onNameChange(viewInfo.viewId, value)}/> :
-        <div className="viewName">{viewInfo.name}</div>;
+        <div className="details">
+            <span className="viewName">{viewInfo.name}</span>
+            <br/>
+            <span className="totalInstances">Total Instances - {viewInfo.totalInstances || 0}</span>
+            {
+                viewInfo.hasHtmlTemplate && <div>
+                    <span style={{fontSize: '30px'}} className="fab fa-html5"></span>
+                </div>
+            }
+        </div>;
 };
 
 @inject('viewsStore') @observer
@@ -22,7 +31,7 @@ export class ViewList extends React.Component<any, any> {
         super(props);
         this.state = {
             isEditMode: {},
-            isUpdatingName: {},
+            isUpdating: {},
             updateViewsName: {}
         };
     }
@@ -43,14 +52,15 @@ export class ViewList extends React.Component<any, any> {
         });
     };
     openEditMode = ({viewId}) => {
-        this.setState({
+        const newState = {
             isEditMode: this.getUpdateObject(viewId, "isEditMode", true),
             isUpdatingName: this.getUpdateObject(viewId, "isUpdatingName", false)
-        });
+        };
+        this.setState(newState);
     };
 
     getUpdateObject = (viewId, propName, newValue) =>
-        Object.assign(this.state[propName], {
+        Object.assign({}, this.state[propName], {
             [viewId]: newValue
         });
 
@@ -59,12 +69,23 @@ export class ViewList extends React.Component<any, any> {
         const {viewsStore} = this.props;
 
         this.setState({
-            isUpdatingName: this.getUpdateObject(viewId, "isUpdatingName", true)
+            isUpdating: this.getUpdateObject(viewId, "isUpdating", true)
         });
         await viewsStore.updateViewName(viewId, updateViewsName[viewId]);
         this.setState({
-            isEditMode: this.getUpdateObject(viewId, "isUpdatingName", false),
-            isUpdatingName: this.getUpdateObject(viewId, "isUpdatingName", false)
+            isEditMode: this.getUpdateObject(viewId, "isUpdating", false),
+            isUpdating: this.getUpdateObject(viewId, "isUpdatingName", false)
+        });
+    };
+
+    appendHtmlTemplate = async ({viewId, html}) => {
+        const {viewsStore} = this.props;
+        this.setState({
+            isUpdating: this.getUpdateObject(viewId, "isUpdating", true)
+        });
+        await viewsStore.appendHtmlTemplate(viewId, html);
+        this.setState({
+            isUpdating: this.getUpdateObject(viewId, "isUpdating", false)
         });
     };
 
@@ -74,7 +95,7 @@ export class ViewList extends React.Component<any, any> {
 
     render() {
         const {searchedViews, isLoading} = this.props.viewsStore;
-        const {isEditMode, isUpdatingName} = this.state;
+        const {isEditMode, isUpdating} = this.state;
         return (
             <div style={{padding: '30px', width: '60%'}}>
                 <SearchViewsSection/>
@@ -84,7 +105,7 @@ export class ViewList extends React.Component<any, any> {
                             <List data={searchedViews}
                                   getDetailsView={(item) => <ViewDetails
                                       isEditMode={isEditMode[item.viewId]}
-                                      isLoading={isUpdatingName[item.viewId]}
+                                      isLoading={isUpdating[item.viewId]}
                                       onNameChange={this.updateStateViewName}
                                       viewInfo={item}/>}
                                   getActionView={
@@ -92,7 +113,8 @@ export class ViewList extends React.Component<any, any> {
                                                                  onRemove={this.tryRemoveView}
                                                                  isEditMode={isEditMode[viewInfo.viewId]}
                                                                  openEditMode={this.openEditMode}
-                                                                 onEdit={this.updateViewName}/>
+                                                                 onEdit={this.updateViewName}
+                                                                 appandHtmlTemplate={this.appendHtmlTemplate}/>
                                   }/> :
                             <div className="noResult">No Result</div>
                 }

@@ -14,21 +14,21 @@ export class ViewService {
         return await appInjector.get(appServices.httpService).delete(url, {viewId})
     }
 
-    async addNewView(viewName) {
-        const url = `${domain.local}${viewApiRoute.addNewView}`;
-        const viewId = await appInjector.get(appServices.httpService).post(url, {viewName});
-        return {
-            viewId,
-            name: viewName
-        }
+    async createNewView(viewName) {
+        const url = `${domain.local}${viewApiRoute.createNewView}`;
+        const result = await appInjector.get(appServices.httpService).post(url, {viewName});
+        return result;
     }
 
     async updateViewName(viewId, viewName) {
         const url = `${domain.local}${viewApiRoute.updateViewName(viewId)}`;
-        await appInjector.get(appServices.httpService).put(url, {viewName});
-        return {
-            viewId,
-            name: viewName
-        }
+        const result = await appInjector.get(appServices.httpService).put(url, {viewName});
+        return result;
+    }
+
+    async appendHtmlTemplate(viewId, html) {
+        const url = `${domain.local}${viewApiRoute.appendHtmlTemplate}`;
+        const result = await appInjector.get(appServices.httpService).post(url, {viewId, htmlTemplate: html});
+        return result;
     }
 }

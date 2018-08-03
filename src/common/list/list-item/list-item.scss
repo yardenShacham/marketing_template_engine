@@ -1,32 +1,35 @@
+$listItemColor: rgba(235, 235, 235, 0.7);
 .list-item {
   display: flex;
-  color: white;
+  color: $listItemColor;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   font-size: 20px;
   font-weight: bold;
-  border: 2px solid rgba(235, 235, 235, .5);
+  border: 2px solid $listItemColor;
   border-radius: 5px;
   margin-top: 20px;
   min-height: 100px;
 
   .details {
-
+    color: $listItemColor;
   }
   .actions {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 105px;
     .action-item {
       font-size: 25px;
       cursor: pointer;
-    }
+      margin-left: 10px;
+      margin-right: 10px;
+  }
     .separate-item {
       height: 27px;
       width: 2px;
-      background-color: white;
+      background-color: $listItemColor;
     }
   }
 

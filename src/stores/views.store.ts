@@ -5,7 +5,6 @@ class ViewStore {
 
 
     //<editor-fold desc="All Views Page">
-    @observable currentViewTemplate;
     @observable allViews = [];
     @observable searchViewNameOrId: string;
     @observable isLoading: boolean = false;
@@ -44,9 +43,9 @@ class ViewStore {
     };
 
     @action
-    addNewView = async (viewName: any) => {
+    createNewView = async (viewName: any) => {
         this.isLoading = true;
-        const newView = await appInjector.get('viewService').addNewView(viewName);
+        const newView = await appInjector.get('viewService').createNewView(viewName);
         runInAction(() => {
             this.allViews.push(newView);
             this.isLoading = false;
@@ -56,6 +55,15 @@ class ViewStore {
     @action
     updateViewName = async (viewId, viewName: any) => {
         const updatedView = await appInjector.get('viewService').updateViewName(viewId, viewName);
+        runInAction(() => {
+            const foundIndex = this.allViews.findIndex((view) => view.viewId === viewId);
+            this.allViews[foundIndex] = updatedView;
+        });
+    };
+
+    @action
+    appendHtmlTemplate = async (viewId, htmlTemmplate) => {
+        const updatedView = await appInjector.get('viewService').appendHtmlTemplate(viewId, htmlTemmplate);
         runInAction(() => {
             const foundIndex = this.allViews.findIndex((view) => view.viewId === viewId);
             this.allViews[foundIndex] = updatedView;
