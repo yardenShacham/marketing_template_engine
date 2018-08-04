@@ -1,5 +1,6 @@
 import {action, observable, runInAction, computed} from 'mobx';
 import {appInjector} from '../core/appInjector';
+import {appServices} from "../consts/appServices";
 
 class ViewStore {
 
@@ -20,7 +21,7 @@ class ViewStore {
     @action
     async getAllViews() {
         this.isLoading = true;
-        const result = await appInjector.get('viewService').getAllViews();
+        const result = await appInjector.get(appServices.viewService).getAllViews();
         runInAction(() => {
             this.isLoading = false;
             this.allViews = result || [];
@@ -35,7 +36,7 @@ class ViewStore {
     @action
     removeView = async (viewId: any) => {
         this.isLoading = true;
-        await appInjector.get('viewService').removeView(viewId);
+        await appInjector.get(appServices.viewService).removeView(viewId);
         runInAction(() => {
             this.allViews = this.allViews.filter((view) => view.viewId !== viewId);
             this.isLoading = false;
@@ -45,7 +46,7 @@ class ViewStore {
     @action
     createNewView = async (viewName: any) => {
         this.isLoading = true;
-        const newView = await appInjector.get('viewService').createNewView(viewName);
+        const newView = await appInjector.get(appServices.viewService).createNewView(viewName);
         runInAction(() => {
             this.allViews.push(newView);
             this.isLoading = false;
@@ -54,7 +55,7 @@ class ViewStore {
 
     @action
     updateViewName = async (viewId, viewName: any) => {
-        const updatedView = await appInjector.get('viewService').updateViewName(viewId, viewName);
+        const updatedView = await appInjector.get(appServices.viewService).updateViewName(viewId, viewName);
         runInAction(() => {
             const foundIndex = this.allViews.findIndex((view) => view.viewId === viewId);
             this.allViews[foundIndex] = updatedView;
@@ -63,7 +64,7 @@ class ViewStore {
 
     @action
     appendHtmlTemplate = async (viewId, htmlTemmplate) => {
-        const updatedView = await appInjector.get('viewService').appendHtmlTemplate(viewId, htmlTemmplate);
+        const updatedView = await appInjector.get(appServices.viewService).appendHtmlTemplate(viewId, htmlTemmplate);
         runInAction(() => {
             const foundIndex = this.allViews.findIndex((view) => view.viewId === viewId);
             this.allViews[foundIndex] = updatedView;

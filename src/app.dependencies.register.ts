@@ -1,17 +1,17 @@
 import {StyleService} from './core/styleService'
 import {ViewService} from './core/viewService'
+import {ViewInstanceService} from './core/viewInstanceService'
 import {HttpService} from './core/httpService'
 import {appInjector} from './core/appInjector';
 import {appConfiguration} from './app.config';
 import {appServices} from './consts/appServices';
 
 
-import * as Guid from 'guid';
-
 export function registerDependencies() {
     if (appInjector) {
         appInjector.registerSingleton(appServices.styleService, StyleService);
         appInjector.registerSingleton(appServices.viewService, ViewService);
+        appInjector.registerSingleton(appServices.viewInstanceService, ViewInstanceService);
         appInjector.registerSingleton(appServices.httpService, HttpService);
         if (appConfiguration.isTestMode) {
             appInjector.registerSingleton("viewService", viewServiceMock, true);

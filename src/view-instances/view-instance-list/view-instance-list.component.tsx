@@ -2,6 +2,8 @@ import * as React from "react";
 import {inject, observer} from "mobx-react";
 import {SearchInstanceViewSection} from './search-instance-view-section';
 import {List} from '../../common/list';
+import {Loader} from '../../common/loader';
+import {Input} from '../../common/input';
 import {confirmAlert} from 'react-confirm-alert';
 
 const ViewInstanceDetails = ({name}) => {
@@ -32,8 +34,6 @@ export class ViewInstanceList extends React.Component<any> {
 
     constructor(props: any) {
         super(props);
-        const {viewInstancesStore} = this.props;
-
     }
 
     tryRemoveViewInstance = ({name, viewInstanceId}) => {
@@ -55,19 +55,29 @@ export class ViewInstanceList extends React.Component<any> {
         this.props.history.push(`/view-instances/${viewInstanceId}`);
     };
 
+    async componentDidMount() {
+        const {viewInstancesStore} = this.props;
+        await viewInstancesStore.getViewNames();
+        viewInstancesStore.selectView();
+    }
+
     render() {
-        const {searchedViewInstances} = this.props.viewInstancesStore;
+        const {searchedViewInstances, isLoading} = this.props.viewInstancesStore;
         return (
             <div style={{padding: '30px', width: '60%'}}>
                 <SearchInstanceViewSection/>
-                <List data={searchedViewInstances}
-                      getDetailsView={(item) => <ViewInstanceDetails item={item}/>}
-                      getActionView={
-                          (item) => <ViewInstanceActions item={item}
-                                                         onRemove={this.tryRemoveViewInstance}
-                                                         onEdit={this.moveToEditViewInstance}
-                                                         onEditStatic={this.moveToStaticEditViewInstance}/>
-                      }/>
+                {
+                    isLoading ? <Loader/> :
+                        searchedViewInstances && searchedViewInstances.length > 0 ?
+                            <List data={searchedViewInstances}
+                                  getDetailsView={(item) => <ViewInstanceDetails item={item}/>}
+                                  getActionView={
+                                      (item) => <ViewInstanceActions item={item}
+                                                                     onRemove={this.tryRemoveViewInstance}
+                                                                     onEdit={this.moveToEditViewInstance}
+                                                                     onEditStatic={this.moveToStaticEditViewInstance}/>
+                                  }/> : <div className="noResult">No Result</div>
+                }
             </div>
         );
     }

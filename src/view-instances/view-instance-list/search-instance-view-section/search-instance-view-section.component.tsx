@@ -1,84 +1,84 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
 import Select from 'react-select';
+import {Input} from '../../../common/input';
+import {OkInput} from '../../../common/okInput';
 
 
-@inject('viewsStore') @observer
+@inject('viewInstancesStore') @observer
 export class SearchInstanceViewSection extends React.Component<any> {
 
     state: any;
-    refs: any
+    refs: any;
 
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedView: null
+            newInstanceName: ""
         };
-        props.viewsStore.getViewNames();
     }
 
+    onSelectedViewChange = ({value}) => {
+        const {selectView} = this.props.viewInstancesStore;
+        selectView(value);
+    };
 
-    onViewNameChange = (selected: any) => {
-        const {getAllViewInstances} = this.props.viewsStore;
+    showAddNewViewInput = () => {
         this.setState({
-            selectedView: selected.value
-        }, () => getAllViewInstances(selected.value));
+            showAddViewNameInput: true
+        })
     };
 
-    componentDidMount() {
-        document.body.addEventListener('keyup', this.searchOnEnter);
+    searchViewInstances = (value) => {
+        const {searchViewInstances} = this.props.viewInstancesStore;
+        searchViewInstances(value);
     };
 
-    componentWillUnmount() {
-        document.body.removeEventListener('keyup', this.searchOnEnter);
-    };
-
-    searchOnEnter = (e: any) => {
-        if (e.keyCode === 13) {
-            this.startSearch();
-        }
-    };
-
-    startSearch = () => {
-        const {searchViews} = this.props.viewsStore;
-        searchViews(this.refs.viewNameOrId.value);
-    };
-
-    addNewInstance = () => {
-
+    createNewInstance = async () => {
+        const {newInstanceName, selectedView} = this.state;
+        const {createNewInstance} = this.props.viewInstancesStore;
+        await createNewInstance(selectedView, newInstanceName);
+        this.setState({
+            showAddViewNameInput: false,
+            newViewName: ''
+        });
     };
 
     render() {
-        const {viewNames} = this.props.viewsStore;
+        const {viewNames, selectedView} = this.props.viewInstancesStore;
+        const {showAddViewNameInput} = this.state;
         return (
-            <div className="insert-entity-container">
-                <div className="search-item">
-                    <Select
-                        options={viewNames.map((e: any) => {
-                            return {
-                                value: e.id,
-                                label: e.name
-                            };
-                        })}
-                        value={this.state.selectedView}
-                        placeholder="Select view name..."
-                        onChange={this.onViewNameChange}/>
+            <div className="search-view-container">
+                <div className="search-container">
+                    <div className="search-item">
+                        <Select
+                            options={viewNames.map((e: any) => {
+                                return {
+                                    value: e.id,
+                                    label: e.name
+                                };
+                            })}
+                            value={selectedView}
+                            placeholder="Select view name..."
+                            onChange={this.onSelectedViewChange}/>
+                    </div>
+                    <div className="search-item">
+                        <Input type="text" placeholder="Select view name..."
+                               onChange={this.searchViewInstances}/>
+                    </div>
+                    <button type="button"
+                            onClick={this.showAddNewViewInput}
+                            className="btn btn-success">
+                        <span>Add Instance</span>
+                    </button>
                 </div>
-                <div className="search-item">
-                    <input type="text" className="form-control"
-                           ref="viewNameOrId"
-                           placeholder="Select view name..."/>
-                </div>
-                <button type="button"
-                        onClick={this.startSearch}
-                        className="btn btn-success">
-                    <span>Search</span>
-                </button>
-                <button type="button"
-                        onClick={this.addNewInstance}
-                        className="btn btn-success">
-                    <span>Add Instance</span>
-                </button>
+                {
+                    showAddViewNameInput &&
+                    <div className="add-new-view-container">
+                        <OkInput onChange={(value) => this.setState({newInstanceName: value})}
+                                 onOk={this.createNewInstance}/>
+                    </div>
+                }
             </div>);
     }
 }

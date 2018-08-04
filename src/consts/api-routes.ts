@@ -8,3 +8,9 @@ export const viewApiRoute = {
     updateViewName: (viewId) => `/views/${viewId}`,
     appendHtmlTemplate: "/views/viewTemplate"
 };
+
+export const viewInstanceApiRoute = {
+    getAllInstances: (viewId) => `/view-instance?viewId=${viewId}`,
+    removeInstance: "/view-instance",
+    createNewInstance: "/view-instance"
+};
