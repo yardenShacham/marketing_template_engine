@@ -1,5 +1,6 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
+import {getNewIdState} from '../../utils/react-state-managment';
 import {SearchViewsSection} from './search-views-section';
 import {List} from '../../common/list';
 import {Loader} from '../../common/loader';
@@ -11,7 +12,7 @@ import {confirmAlert} from 'react-confirm-alert';
 const ViewDetails = (props) => {
     const {viewInfo, isEditMode, onNameChange, isLoading} = props;
     return isLoading ? <Loader/> : isEditMode ?
-        <Input initValue={viewInfo.name} onChange={(value) => onNameChange(viewInfo.viewId, value)}/> :
+        <Input initValue={viewInfo.name} onChange={(value) => onNameChange && onNameChange(viewInfo.viewId, value)}/> :
         <div className="details">
             <span className="viewName">{viewInfo.name}</span>
             <br/>
@@ -53,44 +54,40 @@ export class ViewList extends React.Component<any, any> {
     };
     openEditMode = ({viewId}) => {
         const newState = {
-            isEditMode: this.getUpdateObject(viewId, "isEditMode", true),
-            isUpdatingName: this.getUpdateObject(viewId, "isUpdatingName", false)
+            isEditMode: getNewIdState(this.state, viewId, "isEditMode", true),
+            isUpdatingName: getNewIdState(this.state, viewId, "isUpdatingName", false)
         };
         this.setState(newState);
     };
 
-    getUpdateObject = (viewId, propName, newValue) =>
-        Object.assign({}, this.state[propName], {
-            [viewId]: newValue
-        });
 
     updateViewName = async ({viewId}) => {
         const {updateViewsName} = this.state;
         const {viewsStore} = this.props;
 
         this.setState({
-            isUpdating: this.getUpdateObject(viewId, "isUpdating", true)
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", true)
         });
         await viewsStore.updateViewName(viewId, updateViewsName[viewId]);
         this.setState({
-            isEditMode: this.getUpdateObject(viewId, "isUpdating", false),
-            isUpdating: this.getUpdateObject(viewId, "isUpdatingName", false)
+            isEditMode: getNewIdState(this.state, viewId, "isEditMode", false),
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", false)
         });
     };
 
     appendHtmlTemplate = async ({viewId, html}) => {
         const {viewsStore} = this.props;
         this.setState({
-            isUpdating: this.getUpdateObject(viewId, "isUpdating", true)
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", true)
         });
         await viewsStore.appendHtmlTemplate(viewId, html);
         this.setState({
-            isUpdating: this.getUpdateObject(viewId, "isUpdating", false)
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", false)
         });
     };
 
     updateStateViewName = (viewId, value) => {
-        this.setState({updateViewsName: Object.assign(this.state.updateViewsName, {[viewId]: value})})
+        this.setState({updateViewsName: getNewIdState(this.state, viewId, "updateViewsName", value)})
     };
 
     render() {

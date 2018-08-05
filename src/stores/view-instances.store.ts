@@ -76,11 +76,22 @@ class ViewInstancesStore {
     };
 
     @action
+    updateInstanceName = async (viewInstanceId, viewInstanceName: string) => {
+        const updatedInstance = await appInjector.get(appServices.viewInstanceService)
+            .updateInstanceName(this.selectedView, viewInstanceId, viewInstanceName);
+        runInAction(() => {
+            const foundIndex = this.allViewsInstances.findIndex((view) => view.viewInstanceId === viewInstanceId);
+            this.allViewsInstances[foundIndex] = updatedInstance;
+        });
+    };
+
+    @action
     selectView = async (selectedView) => {
         if (selectedView)
             this.selectedView = selectedView;
         else if (!selectedView && this.viewNames && this.viewNames.length > 0) {
             const {viewId} = this.viewNames[0];
+            this.selectedView = viewId;
             await this.getAllViewInstances(viewId);
         }
     };

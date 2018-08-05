@@ -14,7 +14,7 @@ export class SearchInstanceViewSection extends React.Component<any> {
     constructor(props: any) {
         super(props);
         this.state = {
-            newInstanceName: ""
+            showAddViewNameInput: false
         };
     }
 
@@ -34,13 +34,12 @@ export class SearchInstanceViewSection extends React.Component<any> {
         searchViewInstances(value);
     };
 
-    createNewInstance = async () => {
-        const {newInstanceName, selectedView} = this.state;
+    createNewInstance = async (newInstanceName) => {
+        const {selectedView} = this.state;
         const {createNewInstance} = this.props.viewInstancesStore;
         await createNewInstance(selectedView, newInstanceName);
         this.setState({
-            showAddViewNameInput: false,
-            newViewName: ''
+            showAddViewNameInput: false
         });
     };
 
@@ -52,10 +51,10 @@ export class SearchInstanceViewSection extends React.Component<any> {
                 <div className="search-container">
                     <div className="search-item">
                         <Select
-                            options={viewNames.map((e: any) => {
+                            options={viewNames.map((view: any) => {
                                 return {
-                                    value: e.id,
-                                    label: e.name
+                                    value: view.viewId,
+                                    label: view.name
                                 };
                             })}
                             value={selectedView}
@@ -75,8 +74,7 @@ export class SearchInstanceViewSection extends React.Component<any> {
                 {
                     showAddViewNameInput &&
                     <div className="add-new-view-container">
-                        <OkInput onChange={(value) => this.setState({newInstanceName: value})}
-                                 onOk={this.createNewInstance}/>
+                        <OkInput onOk={this.createNewInstance}/>
                     </div>
                 }
             </div>);

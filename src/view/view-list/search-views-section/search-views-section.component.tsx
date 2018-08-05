@@ -13,8 +13,7 @@ export class SearchViewsSection extends React.Component<any> {
     constructor(props: any) {
         super(props);
         this.state = {
-            showAddViewNameInput: false,
-            newViewName: null
+            showAddViewNameInput: false
         };
     }
 
@@ -30,13 +29,11 @@ export class SearchViewsSection extends React.Component<any> {
         })
     };
 
-    createNewView = async () => {
-        const {newViewName} = this.state;
+    createNewView = async (newViewName) => {
         const {createNewView} = this.props.viewsStore;
         await createNewView(newViewName);
         this.setState({
-            showAddViewNameInput: false,
-            newViewName: ''
+            showAddViewNameInput: false
         });
     };
     searchViews = (value) => {
@@ -63,8 +60,7 @@ export class SearchViewsSection extends React.Component<any> {
                 {
                     showAddViewNameInput &&
                     <div className="add-new-view-container">
-                        <OkInput onChange={(value) => this.setState({newViewName: value})}
-                                 onOk={this.createNewView}/>
+                        <OkInput onOk={this.createNewView}/>
                     </div>
                 }
 

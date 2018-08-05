@@ -1,39 +1,66 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
+import {getNewIdState} from '../../utils/react-state-managment';
 import {SearchInstanceViewSection} from './search-instance-view-section';
 import {List} from '../../common/list';
 import {Loader} from '../../common/loader';
-import {Input} from '../../common/input';
+import {OkInput} from '../../common/okInput';
 import {confirmAlert} from 'react-confirm-alert';
 
-const ViewInstanceDetails = ({name}) => {
-    return name;
+const ViewInstanceDetails = (props) => {
+    const {instance, isEditMode, openEditMode, onUpdateName, isLoading} = props;
+    const {viewInstanceId, name, route, styles, js} = instance;
+    return isLoading ? <Loader/> : isEditMode ?
+        <React.Fragment>
+            <OkInput initValue={name}
+                     onOk={(newInstanceName) => onUpdateName && onUpdateName({viewInstanceId, newInstanceName})}/>
+        </React.Fragment>
+        :
+        <React.Fragment>
+            <span className="viewName">{name}</span>
+            <span className="glyphicon glyphicon-edit"
+                  onClick={() => openEditMode ? openEditMode(instance) : null}/>
+            <br/>
+            <span className="totalInstances">Route - {route}</span>
+            {
+                (js || styles) &&
+                <div className="">
+                    {styles && <span style={{fontSize: '30px'}} className="fab fa-css3"></span>}
+                    {js && <span style={{fontSize: '30px'}} className="fab fa-js"></span>}
+                </div>
+            }
+        </React.Fragment>;
 };
 
+
 const ViewInstanceActions = (props) => {
-    const {onEdit, onEditStatic, onRemove, item} = props;
+    const {editDynamic, onRemove, openUploadModal, instance} = props;
     return (
-        <div>
-         <span className="action-item glyphicon glyphicon-preview"
-               onClick={() => onEdit ? onEdit(item) : null}>
-         </span>
+        <React.Fragment>
+            <span className="action-item fab fa-js"
+                  onClick={() => openUploadModal ? openUploadModal(instance, {isJs: true}) : null}/>
             <div className="separate-item"></div>
-            <span className="action-item glyphicon glyphicon-edit"
-                  onClick={() => onEditStatic ? onEditStatic(item) : null}>
-            </span>
+            <span className="action-item fab fa-css3"
+                  onClick={() => openUploadModal ? openUploadModal(instance, {isCss: true}) : null}/>
+            <div className="separate-item"></div>
+            <span title="add route" className="action-item glyphicon glyphicon-globe"
+                  onClick={() => editDynamic ? editDynamic(instance) : null}/>
             <div className="separate-item"></div>
             <span className="action-item glyphicon glyphicon-remove"
-                  onClick={() => onRemove ? onRemove(item) : null}>
-            </span>
-        </div>
+                  onClick={() => onRemove ? onRemove(instance) : null}/>
+        </React.Fragment>
     )
 };
 
 @inject('viewInstancesStore') @observer
-export class ViewInstanceList extends React.Component<any> {
+export class ViewInstanceList extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
+        this.state = {
+            isEditMode: {},
+            isUpdating: {}
+        };
     }
 
     tryRemoveViewInstance = ({name, viewInstanceId}) => {
@@ -51,8 +78,34 @@ export class ViewInstanceList extends React.Component<any> {
         this.props.history.push(`/view-instances/${viewInstanceId}`);
     };
 
-    moveToStaticEditViewInstance = ({viewInstanceId}) => {
-        this.props.history.push(`/view-instances/${viewInstanceId}`);
+    openEditMode = ({viewInstanceId}) => {
+        const newState = {
+            isEditMode: getNewIdState(this.state, viewInstanceId, "isEditMode", true),
+            isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", false)
+        };
+        this.setState(newState);
+    };
+
+    openUploadModal = ({viewInstanceId}, {isJs, isCss}) => {
+        if (isJs) {
+
+        }
+        else if (isCss) {
+
+        }
+    };
+
+    updateViewInstanceName = async ({viewInstanceId, newInstanceName}) => {
+        const {viewInstancesStore} = this.props;
+
+        this.setState({
+            isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", true)
+        });
+        await viewInstancesStore.updateInstanceName(viewInstanceId, newInstanceName);
+        this.setState({
+            isEditMode: getNewIdState(this.state, viewInstanceId, "isEditMode", false),
+            isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", false)
+        });
     };
 
     async componentDidMount() {
@@ -63,19 +116,27 @@ export class ViewInstanceList extends React.Component<any> {
 
     render() {
         const {searchedViewInstances, isLoading} = this.props.viewInstancesStore;
+        const {isEditMode, isUpdating} = this.state;
         return (
             <div style={{padding: '30px', width: '60%'}}>
                 <SearchInstanceViewSection/>
-                {
+                {//editDynamic, openEditMode, isEditMode, onEdit, onRemove, openUploadModal, instance
                     isLoading ? <Loader/> :
                         searchedViewInstances && searchedViewInstances.length > 0 ?
                             <List data={searchedViewInstances}
-                                  getDetailsView={(item) => <ViewInstanceDetails item={item}/>}
+                                  getDetailsView={(instance) => <ViewInstanceDetails
+                                      isLoading={isUpdating[instance.viewInstanceId]}
+                                      isEditMode={isEditMode[instance.viewInstanceId]}
+                                      openEditMode={this.openEditMode}
+                                      onUpdateName={this.updateViewInstanceName}
+                                      instance={instance}/>}
                                   getActionView={
-                                      (item) => <ViewInstanceActions item={item}
-                                                                     onRemove={this.tryRemoveViewInstance}
-                                                                     onEdit={this.moveToEditViewInstance}
-                                                                     onEditStatic={this.moveToStaticEditViewInstance}/>
+                                      (instance) => <ViewInstanceActions
+                                          instance={instance}
+                                          editDynamic={this.moveToEditViewInstance}
+                                          openUploadModal={this.openUploadModal}
+                                          onRemove={this.tryRemoveViewInstance}
+                                      />
                                   }/> : <div className="noResult">No Result</div>
                 }
             </div>

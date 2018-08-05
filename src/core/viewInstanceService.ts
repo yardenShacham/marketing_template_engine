@@ -1,6 +1,6 @@
 import {appInjector} from './appInjector';
 import {appServices} from "../consts/appServices";
-import {domain, viewInstanceApiRoute} from "../consts/api-routes";
+import {domain, viewApiRoute, viewInstanceApiRoute} from "../consts/api-routes";
 
 export class ViewInstanceService {
 
@@ -20,4 +20,13 @@ export class ViewInstanceService {
         return result;
     }
 
+    async updateInstanceName(viewId, viewInstanceId, viewInstanceName) {
+        const url = `${domain.local}${viewInstanceApiRoute.updateInstanceName}`;
+        const result = await appInjector.get(appServices.httpService).put(url, {
+            viewId,
+            viewInstanceId,
+            viewInstanceName
+        });
+        return result;
+    }
 }
