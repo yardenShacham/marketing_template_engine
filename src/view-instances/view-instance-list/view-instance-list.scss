@@ -3,5 +3,10 @@
     left: 10px;
     font-size: 25px;
     cursor: pointer;
+    opacity: 0;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }

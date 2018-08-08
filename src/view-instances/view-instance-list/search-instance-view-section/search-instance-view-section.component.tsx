@@ -35,9 +35,8 @@ export class SearchInstanceViewSection extends React.Component<any> {
     };
 
     createNewInstance = async (newInstanceName) => {
-        const {selectedView} = this.state;
         const {createNewInstance} = this.props.viewInstancesStore;
-        await createNewInstance(selectedView, newInstanceName);
+        await createNewInstance(newInstanceName);
         this.setState({
             showAddViewNameInput: false
         });

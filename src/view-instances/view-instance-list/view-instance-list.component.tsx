@@ -6,6 +6,7 @@ import {List} from '../../common/list';
 import {Loader} from '../../common/loader';
 import {OkInput} from '../../common/okInput';
 import {confirmAlert} from 'react-confirm-alert';
+import {asFlat} from "mobx";
 
 const ViewInstanceDetails = (props) => {
     const {instance, isEditMode, openEditMode, onUpdateName, isLoading} = props;
@@ -34,19 +35,19 @@ const ViewInstanceDetails = (props) => {
 
 
 const ViewInstanceActions = (props) => {
-    const {editDynamic, onRemove, openUploadModal, instance} = props;
+    const {editDynamic, updateRoute, onRemove, openUploadModal, instance} = props;
     return (
         <React.Fragment>
-            <span className="action-item fab fa-js"
+            <span title="update or add js" className="action-item fab fa-js"
                   onClick={() => openUploadModal ? openUploadModal(instance, {isJs: true}) : null}/>
             <div className="separate-item"></div>
-            <span className="action-item fab fa-css3"
+            <span title="update or add css" className="action-item fab fa-css3"
                   onClick={() => openUploadModal ? openUploadModal(instance, {isCss: true}) : null}/>
             <div className="separate-item"></div>
-            <span title="add route" className="action-item glyphicon glyphicon-globe"
-                  onClick={() => editDynamic ? editDynamic(instance) : null}/>
+            <span title="update route" className="action-item glyphicon glyphicon-globe"
+                  onClick={() => updateRoute ? updateRoute(instance) : null}/>
             <div className="separate-item"></div>
-            <span className="action-item glyphicon glyphicon-remove"
+            <span title="remove instance" className="action-item glyphicon glyphicon-remove"
                   onClick={() => onRemove ? onRemove(instance) : null}/>
         </React.Fragment>
     )
@@ -64,13 +65,13 @@ export class ViewInstanceList extends React.Component<any, any> {
     }
 
     tryRemoveViewInstance = ({name, viewInstanceId}) => {
-        const {removeViewInstance} = this.props.viewsStore;
+        const {viewInstancesStore} = this.props;
         confirmAlert({
             title: `Remove ${name} View`,
             message: 'Are you sure you want to remove this view ?',
             confirmLabel: 'Ok',
             cancelLabel: 'Cancel',
-            onConfirm: () => removeViewInstance(viewInstanceId),
+            onConfirm: () => viewInstancesStore.removeViewInstance(viewInstanceId),
         });
     };
 
@@ -93,6 +94,19 @@ export class ViewInstanceList extends React.Component<any, any> {
         else if (isCss) {
 
         }
+    };
+
+    updateRoute = async ({viewInstanceId, newInstanceName}) => {
+        const {viewInstancesStore} = this.props;
+
+        this.setState({
+            isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", true)
+        });
+        await viewInstancesStore.updateInstanceName(viewInstanceId, newInstanceName);
+        this.setState({
+            isEditMode: getNewIdState(this.state, viewInstanceId, "isEditMode", false),
+            isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", false)
+        });
     };
 
     updateViewInstanceName = async ({viewInstanceId, newInstanceName}) => {
@@ -134,6 +148,7 @@ export class ViewInstanceList extends React.Component<any, any> {
                                       (instance) => <ViewInstanceActions
                                           instance={instance}
                                           editDynamic={this.moveToEditViewInstance}
+                                          updateRoute={this.updateRoute}
                                           openUploadModal={this.openUploadModal}
                                           onRemove={this.tryRemoveViewInstance}
                                       />

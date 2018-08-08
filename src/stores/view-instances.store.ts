@@ -45,9 +45,10 @@ class ViewInstancesStore {
     };
 
     @action
-    removeViewInstance = async (viewId: string, viewInstanceId: string) => {
+    removeViewInstance = async (viewInstanceId: string) => {
         this.isLoading = true;
-        await appInjector.get(appServices.viewInstanceService).removeViewInstance(viewId, viewInstanceId);
+        await appInjector.get(appServices.viewInstanceService)
+            .removeInstance(this.selectedView, viewInstanceId);
         runInAction(() => {
             this.allViewsInstances = this.allViewsInstances.filter((viewInstance) => viewInstance.viewInstanceId !== viewInstanceId);
             this.isLoading = false;
@@ -65,23 +66,26 @@ class ViewInstancesStore {
     };
 
     @action
-    createNewInstance = async (viewId: string, viewInstanceName: string) => {
+    createNewInstance = async (viewInstanceName: string) => {
         this.isLoading = true;
         const newInstance = await appInjector.get(appServices.viewInstanceService)
-            .createNewInstance(viewId, viewInstanceName);
+            .createNewInstance(this.selectedView, viewInstanceName);
+
         runInAction(() => {
-            this.allViewsInstances.push(newInstance);
+            if (newInstance) {
+                this.allViewsInstances.push(newInstance);
+            }
             this.isLoading = false;
         });
     };
 
     @action
     updateInstanceName = async (viewInstanceId, viewInstanceName: string) => {
-        const updatedInstance = await appInjector.get(appServices.viewInstanceService)
+        const newInstanceName = await appInjector.get(appServices.viewInstanceService)
             .updateInstanceName(this.selectedView, viewInstanceId, viewInstanceName);
         runInAction(() => {
             const foundIndex = this.allViewsInstances.findIndex((view) => view.viewInstanceId === viewInstanceId);
-            this.allViewsInstances[foundIndex] = updatedInstance;
+            this.allViewsInstances[foundIndex].name = newInstanceName;
         });
     };
 

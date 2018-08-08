@@ -15,18 +15,21 @@ export class ViewInstanceService {
     }
 
     async createNewInstance(viewId, viewInstanceName) {
-        const url = `${domain.local}${viewInstanceApiRoute.createNewInstance}`;
-        const result = await appInjector.get(appServices.httpService).post(url, {viewId, viewInstanceName});
-        return result;
+        if (viewId && viewInstanceName) {
+            const url = `${domain.local}${viewInstanceApiRoute.createNewInstance}`;
+            const result = await appInjector.get(appServices.httpService)
+                .post(url, {viewId, viewInstanceName});
+            return result;
+        }
+        return null;
     }
 
     async updateInstanceName(viewId, viewInstanceId, viewInstanceName) {
         const url = `${domain.local}${viewInstanceApiRoute.updateInstanceName}`;
-        const result = await appInjector.get(appServices.httpService).put(url, {
+        return await appInjector.get(appServices.httpService).put(url, {
             viewId,
             viewInstanceId,
             viewInstanceName
         });
-        return result;
     }
 }
