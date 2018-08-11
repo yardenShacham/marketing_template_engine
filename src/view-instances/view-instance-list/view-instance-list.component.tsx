@@ -1,6 +1,6 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {getNewIdState} from '../../utils/react-state-managment';
+import {getNewIdState, getNewEditModeState} from '../../utils/react-state-managment';
 import {SearchInstanceViewSection} from './search-instance-view-section';
 import {List} from '../../common/list';
 import {Loader} from '../../common/loader';
@@ -9,20 +9,36 @@ import {confirmAlert} from 'react-confirm-alert';
 import {asFlat} from "mobx";
 
 const ViewInstanceDetails = (props) => {
-    const {instance, isEditMode, openEditMode, onUpdateName, isLoading} = props;
+    const {instance, isEditMode, openEditMode, onUpdateName, onUpdateRoute, isLoading} = props;
     const {viewInstanceId, name, route, styles, js} = instance;
-    return isLoading ? <Loader/> : isEditMode ?
+    return isLoading ? <Loader/> :
+
         <React.Fragment>
-            <OkInput initValue={name}
-                     onOk={(newInstanceName) => onUpdateName && onUpdateName({viewInstanceId, newInstanceName})}/>
-        </React.Fragment>
-        :
-        <React.Fragment>
-            <span className="viewName">{name}</span>
-            <span className="glyphicon glyphicon-edit"
-                  onClick={() => openEditMode ? openEditMode(instance) : null}/>
+            {
+                isEditMode && isEditMode.name ? <OkInput initValue={name}
+                                                         onOk={(newInstanceName) => onUpdateName && onUpdateName({
+                                                             viewInstanceId,
+                                                             newInstanceName
+                                                         })}/> :
+                    <React.Fragment>
+                        <span className="viewName">{name}</span>
+                        <span className="edit-action glyphicon glyphicon-edit"
+                              onClick={() => openEditMode ? openEditMode(instance, "name") : null}/>
+                    </React.Fragment>
+            }
             <br/>
-            <span className="totalInstances">Route - {route}</span>
+            {
+                isEditMode && isEditMode.route ? <OkInput initValue={route}
+                                                          onOk={(newRoute) => onUpdateRoute && onUpdateRoute({
+                                                              viewInstanceId,
+                                                              newRoute
+                                                          })}/> :
+                    <React.Fragment>
+                        <span className="totalInstances">Route - {route}</span>
+                        <span className="edit-action glyphicon glyphicon-globe"
+                              onClick={() => openEditMode ? openEditMode(instance, "route") : null}/>
+                    </React.Fragment>
+            }
             {
                 (js || styles) &&
                 <div className="">
@@ -35,7 +51,7 @@ const ViewInstanceDetails = (props) => {
 
 
 const ViewInstanceActions = (props) => {
-    const {editDynamic, updateRoute, onRemove, openUploadModal, instance} = props;
+    const {onEditDynamic, onRemove, openUploadModal, instance} = props;
     return (
         <React.Fragment>
             <span title="update or add js" className="action-item fab fa-js"
@@ -44,8 +60,8 @@ const ViewInstanceActions = (props) => {
             <span title="update or add css" className="action-item fab fa-css3"
                   onClick={() => openUploadModal ? openUploadModal(instance, {isCss: true}) : null}/>
             <div className="separate-item"></div>
-            <span title="update route" className="action-item glyphicon glyphicon-globe"
-                  onClick={() => updateRoute ? updateRoute(instance) : null}/>
+            <span title="Edit Instance Content" className="action-item glyphicon glyphicon-edit"
+                  onClick={() => onEditDynamic ? onEditDynamic(instance) : null}/>
             <div className="separate-item"></div>
             <span title="remove instance" className="action-item glyphicon glyphicon-remove"
                   onClick={() => onRemove ? onRemove(instance) : null}/>
@@ -59,7 +75,7 @@ export class ViewInstanceList extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
-            isEditMode: {},
+            isEditMode: {name: false, route: false},
             isUpdating: {}
         };
     }
@@ -79,9 +95,9 @@ export class ViewInstanceList extends React.Component<any, any> {
         this.props.history.push(`/view-instances/${viewInstanceId}`);
     };
 
-    openEditMode = ({viewInstanceId}) => {
+    openEditMode = ({viewInstanceId}, propName) => {
         const newState = {
-            isEditMode: getNewIdState(this.state, viewInstanceId, "isEditMode", true),
+            isEditMode: getNewEditModeState(this.state, viewInstanceId, propName, true),
             isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", false)
         };
         this.setState(newState);
@@ -96,20 +112,20 @@ export class ViewInstanceList extends React.Component<any, any> {
         }
     };
 
-    updateRoute = async ({viewInstanceId, newInstanceName}) => {
+    updateRoute = async ({viewInstanceId, newRoute}) => {
         const {viewInstancesStore} = this.props;
 
         this.setState({
             isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", true)
         });
-        await viewInstancesStore.updateInstanceName(viewInstanceId, newInstanceName);
+        await viewInstancesStore.updateRoute(viewInstanceId, newRoute);
         this.setState({
-            isEditMode: getNewIdState(this.state, viewInstanceId, "isEditMode", false),
+            isEditMode: getNewIdState(this.state, viewInstanceId, "route", false),
             isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", false)
         });
     };
 
-    updateViewInstanceName = async ({viewInstanceId, newInstanceName}) => {
+    updateViewInstanceName = async ({viewInstanceId, newInstanceName}, propName) => {
         const {viewInstancesStore} = this.props;
 
         this.setState({
@@ -117,7 +133,7 @@ export class ViewInstanceList extends React.Component<any, any> {
         });
         await viewInstancesStore.updateInstanceName(viewInstanceId, newInstanceName);
         this.setState({
-            isEditMode: getNewIdState(this.state, viewInstanceId, "isEditMode", false),
+            isEditMode: getNewIdState(this.state, viewInstanceId, propName, false),
             isUpdating: getNewIdState(this.state, viewInstanceId, "isUpdating", false)
         });
     };
@@ -134,7 +150,7 @@ export class ViewInstanceList extends React.Component<any, any> {
         return (
             <div style={{padding: '30px', width: '60%'}}>
                 <SearchInstanceViewSection/>
-                {//editDynamic, openEditMode, isEditMode, onEdit, onRemove, openUploadModal, instance
+                {
                     isLoading ? <Loader/> :
                         searchedViewInstances && searchedViewInstances.length > 0 ?
                             <List data={searchedViewInstances}
@@ -143,12 +159,12 @@ export class ViewInstanceList extends React.Component<any, any> {
                                       isEditMode={isEditMode[instance.viewInstanceId]}
                                       openEditMode={this.openEditMode}
                                       onUpdateName={this.updateViewInstanceName}
+                                      onUpdateRoute={this.updateRoute}
                                       instance={instance}/>}
                                   getActionView={
                                       (instance) => <ViewInstanceActions
                                           instance={instance}
-                                          editDynamic={this.moveToEditViewInstance}
-                                          updateRoute={this.updateRoute}
+                                          onEditDynamic={this.moveToEditViewInstance}
                                           openUploadModal={this.openUploadModal}
                                           onRemove={this.tryRemoveViewInstance}
                                       />

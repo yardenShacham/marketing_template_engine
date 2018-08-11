@@ -1,5 +1,6 @@
 import home from './home';
 import viewInstances from './view-instances';
+import editInstanceContent from './edit-instance-content';
 import views from './view';
 
 export function RegisterModules() {
@@ -7,6 +8,7 @@ export function RegisterModules() {
         home();
         views();
         viewInstances();
+        editInstanceContent();
         resolve();
     });
 }

@@ -9,7 +9,7 @@ interface ComponentProps {
     viewInfo: any
 }
 
-export class EditViewStaticFields extends React.Component<any, any> {
+export class InstanceParams extends React.Component<any, any> {
 
     constructor(props) {
         super(props);

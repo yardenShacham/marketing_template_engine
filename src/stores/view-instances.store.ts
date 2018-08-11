@@ -90,6 +90,17 @@ class ViewInstancesStore {
     };
 
     @action
+    updateRoute = async (viewInstanceId, newRoute: string) => {
+        const newRouteName = await appInjector.get(appServices.viewInstanceService)
+            .updateRoute(viewInstanceId, newRoute);
+        runInAction(() => {
+            const foundIndex = this.allViewsInstances.findIndex((view) => view.viewInstanceId === viewInstanceId);
+            this.allViewsInstances[foundIndex].route = newRouteName;
+        });
+    };
+
+
+    @action
     selectView = async (selectedView) => {
         if (selectedView)
             this.selectedView = selectedView;

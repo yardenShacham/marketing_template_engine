@@ -32,4 +32,12 @@ export class ViewInstanceService {
             viewInstanceName
         });
     }
+
+    async updateRoute( viewInstanceId, newRoute) {
+        const url = `${domain.local}${viewInstanceApiRoute.updateRoute}`;
+        return await appInjector.get(appServices.httpService).put(url, {
+            viewInstanceId,
+            newRoute
+        });
+    }
 }

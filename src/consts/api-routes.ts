@@ -13,5 +13,6 @@ export const viewInstanceApiRoute = {
     getAllInstances: (viewId) => `/view-instances?viewId=${viewId}`,
     removeInstance: "/view-instances",
     createNewInstance: "/view-instances",
-    updateInstanceName: "/view-instances"
+    updateInstanceName: "/view-instances",
+    updateRoute: "/view-instances/route"
 };
