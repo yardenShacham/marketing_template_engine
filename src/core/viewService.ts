@@ -9,6 +9,11 @@ export class ViewService {
         return await appInjector.get(appServices.httpService).get(url);
     }
 
+    async getViewStyles(viewId) {
+        const url = `${domain.local}${viewApiRoute.getViewStyles(viewId)}`;
+        return await appInjector.get(appServices.httpService).get(url);
+    }
+
     async removeView(viewId) {
         const url = `${domain.local}${viewApiRoute.removeView}`;
         return await appInjector.get(appServices.httpService).delete(url, {viewId})
@@ -16,19 +21,27 @@ export class ViewService {
 
     async createNewView(viewName) {
         const url = `${domain.local}${viewApiRoute.createNewView}`;
-        const result = await appInjector.get(appServices.httpService).post(url, {viewName});
-        return result;
+        return await appInjector.get(appServices.httpService).post(url, {viewName});
     }
 
     async updateViewName(viewId, viewName) {
         const url = `${domain.local}${viewApiRoute.updateViewName(viewId)}`;
-        const result = await appInjector.get(appServices.httpService).put(url, {viewName});
-        return result;
+        return await appInjector.get(appServices.httpService).put(url, {viewName});
     }
 
     async appendHtmlTemplate(viewId, html) {
-        const url = `${domain.local}${viewApiRoute.appendHtmlTemplate}`;
-        const result = await appInjector.get(appServices.httpService).post(url, {viewId, htmlTemplate: html});
-        return result;
+        const url = `${domain.local}${viewApiRoute.appendHtmlTemplate(viewId)}`;
+        return await appInjector.get(appServices.httpService).post(url, {htmlTemplate: html});
     }
+
+    async appendStyles(viewId, styles) {
+        const url = `${domain.local}${viewApiRoute.appendStyles(viewId)}`;
+        return await appInjector.get(appServices.httpService).post(url, {styles});
+    }
+
+    async appendJs(viewId, js) {
+        const url = `${domain.local}${viewApiRoute.appendJs(viewId)}`;
+        return await appInjector.get(appServices.httpService).post(url, {js});
+    }
+
 }

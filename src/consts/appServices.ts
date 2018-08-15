@@ -2,5 +2,6 @@ export const appServices = {
     styleService: "styleService",
     viewService: "viewService",
     viewInstanceService: "viewInstanceService",
-    httpService: "httpService"
+    httpService: "httpService",
+    instanceContentService: "instanceContentService"
 };

@@ -12,6 +12,20 @@ class InstanceContentStore {
     constructor(initialStore: any) {
     }
 
+    @observable instanceHtmlContent;
+
+    @action
+    getInstanceHtmlContent(viewId, instanceId) {
+        appInjector.get(appServices.instanceContentService).getInstanceHtmlContent(viewId, instanceId)
+            .then((htmlContent) => {
+                runInAction(() => {
+                    this.instanceHtmlContent = htmlContent;
+                });
+            });
+    }
+
+
+
 
 
 }

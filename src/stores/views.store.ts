@@ -71,6 +71,25 @@ class ViewStore {
         });
     };
 
+    @action
+    appendStyles = async (viewId, styles) => {
+        const hasStyles = await appInjector.get(appServices.viewService).appendStyles(viewId, styles);
+        runInAction(() => {
+            const foundIndex = this.allViews.findIndex((view) => view.viewId === viewId);
+            this.allViews[foundIndex].hasStyles = hasStyles;
+        });
+    };
+
+    @action
+    appendJs = async (viewId, js) => {
+        const hasJs = await appInjector.get(appServices.viewService).appendJs(viewId, js);
+        runInAction(() => {
+            const foundIndex = this.allViews.findIndex((view) => view.viewId === viewId);
+            this.allViews[foundIndex].hasJs = hasJs;
+        });
+    };
+
+
 
     //</editor-fold>
 

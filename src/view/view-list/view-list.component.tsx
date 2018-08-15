@@ -18,10 +18,16 @@ const ViewDetails = (props) => {
             <br/>
             <span className="totalInstances">Total Instances - {viewInfo.totalInstances || 0}</span>
             {
-                viewInfo.hasHtmlTemplate && <div>
-                    <span style={{fontSize: '30px'}} className="fab fa-html5"></span>
+                (viewInfo.hasHtmlTemplate || viewInfo.hasStyles || viewInfo.hasJs) && <div>
+                    {viewInfo.hasHtmlTemplate &&
+                    <span style={{fontSize: '30px', marginRight: '15px'}} className="fab fa-html5"></span>}
+                    {viewInfo.hasStyles &&
+                    <span style={{fontSize: '30px', marginRight: '15px'}} className="fab fa-css3"></span>}
+                    {viewInfo.hasJs&&
+                    <span style={{fontSize: '30px', marginRight: '15px'}} className="fab fa-js"></span>}
                 </div>
             }
+
         </div>;
 };
 
@@ -86,6 +92,29 @@ export class ViewList extends React.Component<any, any> {
         });
     };
 
+    appendStyles = async ({viewId, styles}) => {
+        const {viewsStore} = this.props;
+        this.setState({
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", true)
+        });
+        await viewsStore.appendStyles(viewId, styles);
+        this.setState({
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", false)
+        });
+    };
+
+    appendJs = async ({viewId, js}) => {
+        const {viewsStore} = this.props;
+        this.setState({
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", true)
+        });
+        await viewsStore.appendJs(viewId, js);
+        this.setState({
+            isUpdating: getNewIdState(this.state, viewId, "isUpdating", false)
+        });
+    };
+
+
     updateStateViewName = (viewId, value) => {
         this.setState({updateViewsName: getNewIdState(this.state, viewId, "updateViewsName", value)})
     };
@@ -111,7 +140,9 @@ export class ViewList extends React.Component<any, any> {
                                                                  isEditMode={isEditMode[viewInfo.viewId]}
                                                                  openEditMode={this.openEditMode}
                                                                  onEdit={this.updateViewName}
-                                                                 appandHtmlTemplate={this.appendHtmlTemplate}/>
+                                                                 onAppendStyles={this.appendStyles}
+                                                                 onAppendJs={this.appendJs}
+                                                                 onAppendHtmlTemplate={this.appendHtmlTemplate}/>
                                   }/> :
                             <div className="noResult">No Result</div>
                 }
