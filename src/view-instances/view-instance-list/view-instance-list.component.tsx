@@ -92,7 +92,8 @@ export class ViewInstanceList extends React.Component<any, any> {
     };
 
     moveToEditViewInstance = ({viewInstanceId}) => {
-        this.props.history.push(`/view-instances/${viewInstanceId}`);
+        const {selectedView} = this.props.viewInstancesStore;
+        this.props.history.push(`/view-instances/${selectedView}/${viewInstanceId}`);
     };
 
     openEditMode = ({viewInstanceId}, propName) => {
