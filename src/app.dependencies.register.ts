@@ -3,10 +3,14 @@ import {ViewService} from './core/viewService'
 import {ViewInstanceService} from './core/viewInstanceService'
 import {HttpService} from './core/httpService'
 import {InstanceContentService} from './core/instanceContentService';
+import {DomManipulationService} from './core/domManipulationService';
+import {StorageService} from './core/storageService';
+import {GeneralSettingsService} from "./core/generalSettingsService";
 import {appInjector} from './core/appInjector';
 import {appConfiguration} from './app.config';
 
 import {appServices} from './consts/appServices';
+
 
 
 export function registerDependencies() {
@@ -16,6 +20,9 @@ export function registerDependencies() {
         appInjector.registerSingleton(appServices.viewInstanceService, ViewInstanceService);
         appInjector.registerSingleton(appServices.httpService, HttpService);
         appInjector.registerSingleton(appServices.instanceContentService, InstanceContentService);
+        appInjector.registerSingleton(appServices.domManipulationService, DomManipulationService);
+        appInjector.registerSingleton(appServices.storageService, StorageService);
+        appInjector.registerSingleton(appServices.generalSettingsService, GeneralSettingsService);
         if (appConfiguration.isTestMode) {
             appInjector.registerSingleton("viewService", viewServiceMock, true);
         }

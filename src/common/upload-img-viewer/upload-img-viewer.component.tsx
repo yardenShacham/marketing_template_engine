@@ -32,16 +32,14 @@ export class UploadImgViewer extends React.Component<any> {
         let {imagePreviewUrl} = this.state;
         let $imagePreview = null;
         if (imagePreviewUrl) {
-            $imagePreview = (<img src={imagePreviewUrl}/>);
+            $imagePreview = (<img className="img-preview" src={imagePreviewUrl}/>);
         } else {
             $imagePreview = (<div className="previewText">Please select an Image...</div>);
         }
         return (
 
             <div className="img-viewer">
-                <div className="img-preview">
-                    {$imagePreview}
-                </div>
+                {$imagePreview}
                 <form>
                     <input className="fileInput"
                            id="in"
@@ -54,7 +52,6 @@ export class UploadImgViewer extends React.Component<any> {
                         {imagePreviewUrl ?
                             <span onClick={this.props.onUploadImg}
                                   className="action-btn glyphicon glyphicon-ok"></span> : null}
-
                     </div>
                 </form>
             </div>);

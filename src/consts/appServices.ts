@@ -3,5 +3,8 @@ export const appServices = {
     viewService: "viewService",
     viewInstanceService: "viewInstanceService",
     httpService: "httpService",
-    instanceContentService: "instanceContentService"
+    instanceContentService: "instanceContentService",
+    domManipulationService: "domManipulationService",
+    storageService: "storageService",
+    generalSettingsService: "generalSettingsService"
 };

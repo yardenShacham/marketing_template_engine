@@ -3,10 +3,12 @@ import * as React from 'react';
 import {RegisterModules} from './module.register';
 import {Header} from './common/header';
 import {Routes} from './app.routes';
+import {appInjector} from './core/appInjector';
+import {appServices} from './consts/appServices';
 
 export function startApp() {
     return RegisterModules().then(() => {
-        // you can login and init some stuff
+        appInjector.get(appServices.generalSettingsService).reloadSettings();
         return true;
     });
 

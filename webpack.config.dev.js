@@ -4,7 +4,7 @@ const path = require('path');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 
 const bootstrapEntryPoints = require('./webpack.bootstrap.config');
-const bootstrapConfig =  bootstrapEntryPoints.dev;
+const bootstrapConfig = bootstrapEntryPoints.dev;
 
 config.entry.vendors = bootstrapConfig;
 config.devtool = 'source-map';
@@ -20,6 +20,6 @@ config.devServer = {
 config.plugins.push(new webpack.LoaderOptionsPlugin({debug: true}));
 //config.plugins.push(new webpack.HotModuleReplacementPlugin());
 config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
-config.plugins.push(new OpenBrowserPlugin({ url: 'http://localhost:3000' }));
+config.plugins.push(new OpenBrowserPlugin({url: `http://localhost:${config.devServer.port}`}));
 
 module.exports = config;

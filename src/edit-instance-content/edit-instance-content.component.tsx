@@ -3,6 +3,7 @@ import {inject, observer} from "mobx-react";
 import ReactHtmlParser from 'react-html-parser';
 import {appInjector} from '../core/appInjector';
 import {appServices} from "../consts/appServices";
+import {loadIntractionableComponents} from './IntractionableHelper';
 
 @inject('instanceContentStore') @observer
 export class EditInstanceContent extends React.Component<any, any> {
@@ -16,8 +17,10 @@ export class EditInstanceContent extends React.Component<any, any> {
         const {instanceContentStore} = this.props;
         const params = this.props.match && this.props.match.params || {};
         instanceContentStore.getInstanceHtmlContent(params.viewId, params.instanceId);
+
         appInjector.get(appServices.viewService).getViewStyles(params.viewId).then((viewStyles) => {
             appInjector.get(appServices.styleService).loadDynamicStyles(viewStyles, "viewStyles");
+            setTimeout(loadIntractionableComponents, 500);
         });
     }
 

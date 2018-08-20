@@ -24,3 +24,7 @@ export const viewInstanceContentApiRoutes = {
     getHtmlContent: (viewId, instanceId) => `/instance-conetnt/${viewId}/${instanceId}/preview`,
     updateContentParams: (viewId, instanceId) => `/instance-conetnt/${viewId}/${instanceId}`
 };
+
+export const generalRoute = {
+    getGeneralSettings: "/general-settings"
+};
